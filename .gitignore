@@ -1,0 +1,12 @@
+# Build output
+bin/
+obj/
+TestResults/
+
+# Frontend
+node_modules/
+dist/
+
+# Claude Code hook state
+.claude/.last-verify
+.claude/.last-verify.log
