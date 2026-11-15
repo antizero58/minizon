@@ -62,6 +62,8 @@ Git (ветки, коммиты, PR) делает только основная 
 - Контракты (proto, события, contracts/openapi/gateway.json) меняются только через ADR: ADR и сам контракт — вместе.
 - Тесты к каждому изменению: unit для домена пишет `developer` вместе с кодом; интеграционные через Testcontainers,
   граничные и конкурентные — `test-writer`; для фронтенда — Vitest; сквозные — Playwright.
+- Интеграционные тесты (нужен Docker) помечаем `[Trait("Category","Integration")]`: хук проверки запускает только
+  быстрые тесты (`Category!=Integration`), интеграционные идут отдельным полным прогоном.
 - Не отключать проверки (nullable, предупреждения, проверку сертификатов) ради «чтобы собралось».
 - Секреты не коммитить; конфигурация через appsettings + переменные окружения.
 - Архитектурные решения — в docs/adr/NNNN-название.md.
@@ -73,7 +75,8 @@ Git (ветки, коммиты, PR) делает только основная 
 
 ## Команды
 - Сборка: dotnet build
-- Тесты: dotnet test
+- Быстрые тесты (без Docker): dotnet test --filter "Category!=Integration"
+- Все тесты, включая интеграционные: dotnet test (нужен запущенный Docker; гоняют `test-writer`, CI и я перед PR)
 - Окружение: docker compose -f deploy/docker-compose.yml up -d
 - Фронтенд: cd src/Web && npm install && npm run dev   (тесты: npm test, сборка: npm run build)
 - PR: gh pr create
