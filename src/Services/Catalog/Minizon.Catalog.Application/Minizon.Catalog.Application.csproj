@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Minizon.Catalog.Domain\Minizon.Catalog.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
