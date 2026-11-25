@@ -10,3 +10,7 @@ dist/
 # Claude Code hook state
 .claude/.last-verify
 .claude/.last-verify.log
+
+# IDE
+.vs/
+*.user

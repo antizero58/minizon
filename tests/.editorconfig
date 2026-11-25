@@ -1,0 +1,3 @@
+# Test method names use underscores (Method_Scenario_Expected); CA1707 targets public library API (ADR 0003, item 7).
+[*.cs]
+dotnet_diagnostic.CA1707.severity = none
