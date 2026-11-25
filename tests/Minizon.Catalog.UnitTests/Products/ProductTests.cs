@@ -13,6 +13,7 @@ public class ProductTests
         Assert.Equal("Coffee mug", result.Value.Name);
         Assert.Equal(9.99m, result.Value.Price);
         Assert.NotEqual(Guid.Empty, result.Value.Id);
+        Assert.Equal(7, result.Value.Id.Version);
     }
 
     [Fact]

@@ -71,17 +71,59 @@ public partial class LayerDependencyTests
                 continue;
             }
 
-            var allowed = allowedLayers
-                .Select(layer => $"Minizon.{project.ServiceFolder}.{layer}")
-                .ToHashSet(StringComparer.Ordinal);
-
-            foreach (var reference in project.ProjectReferences.Where(reference => !allowed.Contains(reference)))
+            foreach (var reference in DisallowedReferences(project, RepositoryLayout.ServicesDirectory, allowedLayers))
             {
                 violations.Add($"{project.Name}: reference to '{reference}' is not allowed.");
             }
         }
 
         Assert.True(violations.Count == 0, string.Join(Environment.NewLine, violations));
+    }
+
+    [Fact]
+    public void CatalogProject_RejectsSameNamedProjectOutsideCatalog()
+    {
+        var services = Directory.CreateTempSubdirectory("minizon-services-");
+        try
+        {
+            var application = services.CreateSubdirectory("Catalog/Minizon.Catalog.Application");
+            const string domainName = "Minizon.Catalog.Domain.csproj";
+            var catalogDomain = services.CreateSubdirectory("Catalog/Minizon.Catalog.Domain");
+            var otherDomain = services.CreateSubdirectory("Other/Minizon.Catalog.Domain");
+            File.WriteAllText(Path.Combine(catalogDomain.FullName, domainName), "<Project />");
+            var outsideReference = Path.Combine(otherDomain.FullName, domainName);
+            File.WriteAllText(outsideReference, "<Project />");
+
+            var applicationFile = Path.Combine(application.FullName, "Minizon.Catalog.Application.csproj");
+            File.WriteAllText(applicationFile,
+                """
+                <Project>
+                  <ItemGroup>
+                    <ProjectReference Include="..\Minizon.Catalog.Domain\./Minizon.Catalog.Domain.csproj" />
+                    <ProjectReference Include="../../Other/Minizon.Catalog.Domain/Minizon.Catalog.Domain.csproj" />
+                  </ItemGroup>
+                </Project>
+                """);
+            var project = new ServiceProject("Catalog", new FileInfo(applicationFile));
+
+            Assert.Equal(outsideReference, Assert.Single(DisallowedReferences(project, services, AllowedReferences["Application"])));
+        }
+        finally
+        {
+            services.Delete(recursive: true);
+        }
+    }
+
+    private static IEnumerable<string> DisallowedReferences(
+        ServiceProject project, DirectoryInfo services, string[] allowedLayers)
+    {
+        var pathComparer = OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
+        var allowed = allowedLayers
+            .Select(layer => $"Minizon.{project.ServiceFolder}.{layer}")
+            .Select(name => Path.GetFullPath(Path.Combine(project.ServiceFolder, name, $"{name}.csproj"), services.FullName))
+            .ToHashSet(pathComparer);
+
+        return project.ProjectReferences.Where(reference => !allowed.Contains(reference));
     }
 
     [Fact]

@@ -17,6 +17,15 @@ public class HealthEndpointTests(WebApplicationFactory<Program> factory)
         Assert.Equal("Healthy", await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken));
     }
 
+    [Fact]
+    public async Task Post_Health_ReturnsMethodNotAllowed()
+    {
+        using var client = factory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
+        using var response = await client.PostAsync("/health", null, TestContext.Current.CancellationToken);
+
+        Assert.Equal(HttpStatusCode.MethodNotAllowed, response.StatusCode);
+    }
+
     [Theory]
     [InlineData("/")]
     [InlineData("/products")]

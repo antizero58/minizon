@@ -74,9 +74,11 @@ internal sealed class ServiceProject
 
     public string? Sdk => Document.Root?.Attribute("Sdk")?.Value;
 
-    /// <summary>Project names (file names without extension) of direct ProjectReference items.</summary>
+    /// <summary>Normalized absolute paths of direct ProjectReference items.</summary>
     public IReadOnlyList<string> ProjectReferences => Includes("ProjectReference")
-        .Select(include => Path.GetFileNameWithoutExtension(include.Replace('\\', '/')))
+        .Select(include => Path.GetFullPath(
+            include.Replace('\\', Path.DirectorySeparatorChar).Replace('/', Path.DirectorySeparatorChar),
+            File.Directory!.FullName))
         .ToList();
 
     public IReadOnlyList<string> PackageReferences => Includes("PackageReference");
