@@ -43,7 +43,7 @@ dotnet test --no-build --nologo --filter "Category!=Integration"
 - Г5 (требует проверки, V2). В режиме MTP запуск, в котором не выполнен ни один тест, завершается ненулевым кодом (по документации MTP — 8).
 - Г6 (требует проверки, V3). xUnit v3 без секции `test.runner` в global.json, но с включённой в проекте поддержкой MTP, падает с ошибкой
   вида «Testing with VSTest target is no longer supported by Microsoft.Testing.Platform on .NET 10 SDK and later»;
-  xUnit v3 с отключённым MTP (пакет `xunit.v3.mtp-off` + `xunit.runner.visualstudio` 3.x + `Microsoft.NET.Test.Sdk`) работает в режиме VSTest
+  xUnit v3 с отключённым MTP (пакет `xunit.v3.mtp-off` 4.0.3 + `xunit.runner.visualstudio` 4.0.1 + `Microsoft.NET.Test.Sdk` 18.12.0) работает в режиме VSTest
   с командой хука как есть. Существование и поведение пакета `xunit.v3.mtp-off` тоже требует проверки.
 
 ## Варианты

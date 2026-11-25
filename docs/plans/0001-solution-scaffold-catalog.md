@@ -203,9 +203,9 @@ OpenTelemetry, аутентификация, HTTPS-настройки Api. Ко�
 6. Прямой запуск `./bin/Debug/net10.0/<Проект>.exe` → тесты выполняются (контроль, что проблема не в самом проекте).
 
 **V3. Вариант C (гипотеза Г6).** Песочница без `test.runner` в global.json:
-1. Проект с `xunit.v3` (MTP по умолчанию) + `Microsoft.NET.Test.Sdk` + `xunit.runner.visualstudio` 3.x: команда из V1 п. 2 → записать
+1. Проект с `xunit.v3` 4.0.3 (MTP включён в пакете), без секции `test.runner` в `global.json`: команда из V1 п. 2 → записать
    результат (по Г6 — ошибка про «VSTest target is no longer supported»).
-2. Проект с `xunit.v3.mtp-off` (если пакет существует по V0) + `Microsoft.NET.Test.Sdk` + `xunit.runner.visualstudio` 3.x:
+2. Проект с `xunit.v3.mtp-off` 4.0.3 + `Microsoft.NET.Test.Sdk` 18.12.0 + `xunit.runner.visualstudio` 4.0.1:
    повторить V1 п. 1–4 → ожидаемое то же, что в V1.
 
 По результатам V1–V3 владелец выбрал вариант C. Методика выше приведена для воспроизведения замеров.
